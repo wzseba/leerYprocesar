@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Scanner;
 
 public class RegistrarPersonas {
@@ -50,7 +52,7 @@ public class RegistrarPersonas {
 		return listaPersonas;
 	}
 
-	public LinkedList<Persona> getPersonasMayoresAEdad(LinkedList<Persona> p, int edad) {
+	public LinkedList<Persona> getPersonasMayoresAedad(LinkedList<Persona> p, int edad) {
 		/*
 		 * Implementar un método getPersonasMayoresAEdad que reciba un objeto
 		 * LinkedList<Persona> y una edad y devuelva otro objeto LinkedList<Persona> con
@@ -125,15 +127,54 @@ public class RegistrarPersonas {
 
 	}
 
-	public int cantidadPersonasPorEncimaPromedio() {
+	public int cantidadPersonasPorEncimaPromedio(String archivo) {
 		/*
 		 * Implementar un método que devuelva la cantidad de personas cuya edad está por
 		 * encima de la edad promedio
 		 */
+		int contadorPersonas = 0;
+		double promedio = calcularEdadPromedio(archivo);
+		File f = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+		String linea;
+		String[] datos;
+		int edad;
+		
+		try {
+			f = new File(archivo);
+			fr = new FileReader(f);
+			br = new BufferedReader(fr);
+			linea = br.readLine();
+
+			while (linea != null) {
+				datos = linea.split(" ");
+				edad = Integer.parseInt(datos[2]);
+				
+				if(promedio > edad) {					
+					contadorPersonas++;
+				}
+				linea = br.readLine();
+			}
+			fr.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return contadorPersonas;
+	}
+
+	public Map<Integer, ArrayList<Persona>> agruparPersonasPorEdad(String archivo) {
+		/*
+		 * Agrupar las personas por edad, o sea, generar un archivo tal que figure en
+		 * una línea la edad, y debajo todas las personas que tienen esa edad.
+		 */
 		
 		
 
-		return 0;
+		return null;
+
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -147,14 +188,21 @@ public class RegistrarPersonas {
 		System.out.println("\n---------------------------\n");
 
 		/* Personas mayore de xx ordenado alfabeticamente */
-		LinkedList<Persona> aux = rnp.getPersonasMayoresAEdad(listaPersonas, 37);
+		LinkedList<Persona> aux = rnp.getPersonasMayoresAedad(listaPersonas, 37);
 		for (Persona persona : aux) {
 			System.out.println(persona);
 		}
 
 		System.out.println("\n---------------------------\n");
+		System.out.println("\nEdad promedio\n");
 
 		double promedioEdad = rnp.calcularEdadPromedio("personas.in");
 		System.out.println(promedioEdad);
+		
+		System.out.println("\n---------------------------\n");
+		System.out.println("\nCantidad de personas que estan por encima del promedio\n");
+		
+		int cantidadPersonas = rnp.cantidadPersonasPorEncimaPromedio("personas.in");
+		System.out.println(cantidadPersonas);
 	}
 }
