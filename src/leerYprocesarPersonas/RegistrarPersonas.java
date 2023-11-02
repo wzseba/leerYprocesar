@@ -2,14 +2,14 @@ package leerYprocesarPersonas;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Scanner;
 
 public class RegistrarPersonas {
 
@@ -165,15 +165,55 @@ public class RegistrarPersonas {
 		return contadorPersonas;
 	}
 
-	public Map<Integer, ArrayList<Persona>> agruparPersonasPorEdad(String archivo) {
+	public void agruparPersonasPorEdad(String archivo) {
 		/*
 		 * Agrupar las personas por edad, o sea, generar un archivo tal que figure en
 		 * una línea la edad, y debajo todas las personas que tienen esa edad.
 		 */
 		
+		File f = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+		String line = null;
+		String[] datos;
+		int edad;
+		
+		Map<Integer, LinkedList<Persona>> map = new HashMap<Integer, LinkedList<Persona>>();
+		
+		try {
+			
+			f = new File(archivo);
+			fr = new FileReader(f);
+			br = new BufferedReader(br);
+			line = br.readLine();
+			
+			while (line != null) {
+				datos = line.split(" ");
+				edad = Integer.parseInt(datos[2]);
+				
+				if(map.containsKey(edad)) {
+					
+				}
+				
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(fr != null) {
+					fr.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 		
 
-		return null;
+		
 
 	}
 
