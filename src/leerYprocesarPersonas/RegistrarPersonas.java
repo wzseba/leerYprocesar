@@ -2,6 +2,7 @@ package leerYprocesarPersonas;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,43 +11,60 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+//import java.util.Scanner;
 
 public class RegistrarPersonas {
 
-	public LinkedList<Persona> getPersonas(String archivo) {
+	public static LinkedList<Persona> getPersonas(String archivo) {
 
 		File f = null;
 		FileReader fr = null;
 		BufferedReader br = null;
 		LinkedList<Persona> listaPersonas = new LinkedList<Persona>();
-
 		String linea;
+
 		String[] datos;
 
-		f = new File(archivo);
 		try {
+			/*implementacion con Scanner*/
+//			Scanner sc = new Scanner(new File(archivo));
+//			while(sc.hasNextLine()) {
+//				linea = sc.nextLine();
+//				datos = linea.split(" ");
+//				listaPersonas.add(new Persona(Integer.parseInt(datos[0]), datos[1], Integer.parseInt(datos[2])));
+//			}
 
+			f = new File(archivo);
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			linea = br.readLine();
-
+			
 			while (linea != null) {
 				datos = linea.split(" ");
 
-//				int edad = Integer.parseInt(datos[2]);
-//				int dni = Integer.parseInt(datos[0]);
-//
-//				Persona p = new Persona(dni, datos[1], edad);
-//				listaPersonas.add(p);
-
 				listaPersonas.add(new Persona(Integer.parseInt(datos[0]), datos[1], Integer.parseInt(datos[2])));
+				
 				linea = br.readLine();
 			}
-
-			fr.close();
-
-		} catch (IOException e) {
+		
+		} catch (FileNotFoundException fnfe) {
+			
+			fnfe.printStackTrace();
+			
+		} catch(IOException e){
+			
 			e.printStackTrace();
+			
+		}finally {
+			try {
+				
+				if(fr != null) {
+					fr.close();
+				}
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 		}
 
 		return listaPersonas;
@@ -93,7 +111,7 @@ public class RegistrarPersonas {
 		pr.close();
 	}
 
-	public double calcularEdadPromedio(String archivo) {
+	public static double calcularEdadPromedio(String archivo) {
 
 		int totalEdad = 0;
 		int contadorPersonas = 0;
@@ -129,7 +147,7 @@ public class RegistrarPersonas {
 
 	}
 
-	public int cantidadPersonasPorEncimaPromedio(String archivo) {
+	public static int cantidadPersonasPorEncimaPromedio(String archivo) {
 		/*
 		 * Implementar un método que devuelva la cantidad de personas cuya edad está por
 		 * encima de la edad promedio
@@ -182,24 +200,24 @@ public class RegistrarPersonas {
 
 			if (personasPorEdad.containsKey(key)) {
 				value = personasPorEdad.get(key);
-				value.add(persona);
 			} else {
 				value = new LinkedList<Persona>();
-				value.add(persona);
-				personasPorEdad.put(key, value);
 			}
+			value.add(persona);
+			personasPorEdad.put(key, value);
 		}
 
 		return personasPorEdad;
 	}
 
-	public static void generarPersonasPorEdad(Map<Integer, LinkedList<Persona>> map) {
+	public static void generarPersonasPorEdad(Map<Integer, LinkedList<Persona>> map, String file) {
 		/*
 		 * generar un archivo tal que figure en una línea la edad, y debajo todas las
 		 * personas que tienen esa edad.
+		 * "personasAgrupadasPorEdad.out"
 		 */
 		try {
-			PrintWriter pr = new PrintWriter(new File("personasAgrupadasPorEdad.out"));
+			PrintWriter pr = new PrintWriter(new File(file));
 			
 			for (Map.Entry<Integer, LinkedList<Persona>> entry : map.entrySet()) {
 				Integer key = entry.getKey();
@@ -221,16 +239,17 @@ public class RegistrarPersonas {
 
 	public static void main(String[] args) throws IOException {
 
-		RegistrarPersonas rnp = new RegistrarPersonas();
+		/*Se utilizan metodos static para no tener que invocarlos atravez de un objeto y solo usamos metodos de la clase*/
 
 		/* Lista completa de personas */
-		LinkedList<Persona> listaPersonas = rnp.getPersonas("personas.in");
-//		listaPersonas.forEach(i -> System.out.println(i));
+		LinkedList<Persona> listaPersonas = RegistrarPersonas.getPersonas("personas.in");
+		listaPersonas.forEach(i -> System.out.println(i));
+
 //
 //		System.out.println("\n---------------------------\n");
-		generarArchivoDePersonasMayores(listaPersonas, 39);
+//		generarArchivoDePersonasMayores(listaPersonas, 39);
 		
-		generarPersonasPorEdad(agruparPersonasPorEdad(listaPersonas));
+//		generarPersonasPorEdad(agruparPersonasPorEdad(listaPersonas));
 		/* Personas mayore de xx ordenado alfabeticamente */
 //		LinkedList<Persona> aux = rnp.getPersonasMayoresAedad(listaPersonas, 37);
 //		for (Persona persona : aux) {
